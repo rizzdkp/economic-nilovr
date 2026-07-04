@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum TipeDompet {
+  cash
+  bank
+  e_wallet
+  lainnya
+}
+
+enum JenisKategori {
+  income
+  expense
+}
+
+enum JenisTransaksi {
+  income
+  expense
+  transfer
+}
+
+model Dompet {
+  id         String     @id @default(cuid())
+  nama       String
+  tipe       TipeDompet
+  saldoAwal  Decimal    @default(0) @db.Decimal(14, 2)
+  warna      String     @default("#3B7A57")
+  diarsipkan Boolean    @default(false)
+  dibuatPada DateTime   @default(now())
+
+  transaksi      Transaksi[] @relation("dompetUtama")
+  transferKeluar Transaksi[] @relation("dompetAsal")
+  transferMasuk  Transaksi[] @relation("dompetTujuan")
+}
+
+model Kategori {
+  id        String        @id @default(cuid())
+  nama      String
+  jenis     JenisKategori
+  warna     String
+  ikon      String
+  isDefault Boolean       @default(false)
+  disembunyikan Boolean   @default(false)
+  transaksi Transaksi[]
+
+  @@unique([nama, jenis])
+}
+
+model Transaksi {
+  id      String         @id @default(cuid())
+  tanggal DateTime
+  jumlah  Decimal        @db.Decimal(14, 2)
+  jenis   JenisTransaksi
+  catatan String?
+
+  dompetId String?
+  dompet   Dompet? @relation("dompetUtama", fields: [dompetId], references: [id])
+
+  dompetAsalId String?
+  dompetAsal   Dompet? @relation("dompetAsal", fields: [dompetAsalId], references: [id])
+
+  dompetTujuanId String?
+  dompetTujuan   Dompet? @relation("dompetTujuan", fields: [dompetTujuanId], references: [id])
+
+  kategoriId String?
+  kategori   Kategori? @relation(fields: [kategoriId], references: [id])
+
+  dibuatPada DateTime @default(now())
+
+  @@index([tanggal])
+  @@index([dompetId])
+  @@index([kategoriId])
+}
