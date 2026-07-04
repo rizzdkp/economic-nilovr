@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { TrendChart } from "@/components/chart/TrendChart";
 import { CategoryDonutChart } from "@/components/chart/CategoryDonutChart";
 import { WalletBarChart } from "@/components/chart/WalletBarChart";
 import { fetchTrend, fetchBreakdownBulanIni, fetchBreakdownDompet } from "@/lib/actions/laporan";
+import { useAutoRefresh } from "@/lib/use-auto-refresh";
 import { cn } from "@/lib/cn";
 
 type TrendPoint = { bulan: string; pemasukan: number; pengeluaran: number };
@@ -18,26 +19,27 @@ export default function LaporanPage() {
   const [breakdown, setBreakdown] = useState<BreakdownPoint[] | null>(null);
   const [walletChart, setWalletChart] = useState<WalletPoint[] | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const data = await fetchTrend(bulanRange);
-      setTrend(data);
-    })();
+  const reload = useCallback(async () => {
+    const [trendData, breakdownData, walletData] = await Promise.all([
+      fetchTrend(bulanRange),
+      fetchBreakdownBulanIni(),
+      fetchBreakdownDompet(),
+    ]);
+    setTrend(trendData);
+    setBreakdown(breakdownData);
+    setWalletChart(walletData);
   }, [bulanRange]);
 
   useEffect(() => {
     (async () => {
-      const [breakdownData, walletData] = await Promise.all([
-        fetchBreakdownBulanIni(),
-        fetchBreakdownDompet(),
-      ]);
-      setBreakdown(breakdownData);
-      setWalletChart(walletData);
+      await reload();
     })();
-  }, []);
+  }, [reload]);
+
+  useAutoRefresh(reload);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-enter flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold text-text-primary">Laporan</h1>
         <p className="mt-1 text-sm text-text-secondary">

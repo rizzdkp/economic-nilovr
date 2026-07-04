@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { DompetCard } from "@/components/dompet/DompetCard";
 import { DompetFormModal } from "@/components/dompet/DompetFormModal";
+import { useAutoRefresh } from "@/lib/use-auto-refresh";
 import type { TipeDompet } from "@/generated/prisma/client";
 
 interface DompetItem {
@@ -40,6 +41,8 @@ export default function DompetPage() {
       await load();
     })();
   }, [load]);
+
+  useAutoRefresh(load);
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -76,7 +79,7 @@ export default function DompetPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-enter flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-text-primary">Dompet</h1>

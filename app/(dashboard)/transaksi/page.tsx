@@ -16,6 +16,7 @@ import {
 } from "@/components/transaksi/TransaksiFormModal";
 import { TransaksiTable, type TransaksiRow } from "@/components/transaksi/TransaksiTable";
 import { Pagination } from "@/components/transaksi/Pagination";
+import { useAutoRefresh } from "@/lib/use-auto-refresh";
 
 const PAGE_SIZE = 20;
 
@@ -96,6 +97,8 @@ function TransaksiPageInner() {
     })();
   }, [loadTransaksi]);
 
+  useAutoRefresh(loadTransaksi);
+
   async function handleDelete() {
     if (!deleteTarget) return;
     setIsBusy(true);
@@ -117,7 +120,7 @@ function TransaksiPageInner() {
   }));
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-enter flex flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-text-primary">Transaksi</h1>

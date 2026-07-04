@@ -13,6 +13,9 @@
   --danger: #c0392b;
   --success: #2e7d5b;
   --border: rgba(0, 0, 0, 0.08);
+  --blob-accent: rgba(59, 122, 87, 0.22);
+  --blob-warm: rgba(203, 168, 105, 0.24);
+  --blob-soft: rgba(46, 125, 91, 0.13);
 }
 
 .dark {
@@ -26,6 +29,9 @@
   --danger: #e0685a;
   --success: #4fae85;
   --border: rgba(255, 255, 255, 0.08);
+  --blob-accent: rgba(79, 174, 133, 0.14);
+  --blob-warm: rgba(203, 168, 105, 0.08);
+  --blob-soft: rgba(46, 125, 91, 0.11);
 }
 
 @theme inline {
@@ -81,5 +87,101 @@ body {
   .modal-panel {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
+  }
+}
+
+/* == Latar dekoratif (design system §2): glass butuh bentuk lembut di belakangnya
+      untuk di-blur — di atas background polos efeknya tidak terlihat. == */
+.decorative-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Grain halus supaya permukaan tidak terasa steril/plastik. */
+.decorative-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+}
+
+.dark .decorative-backdrop::after {
+  opacity: 0.07;
+}
+
+.backdrop-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+}
+
+.backdrop-blob-1 {
+  width: 480px;
+  height: 480px;
+  top: -140px;
+  left: -110px;
+  background: var(--blob-accent);
+}
+
+.backdrop-blob-2 {
+  width: 420px;
+  height: 420px;
+  top: 28%;
+  right: -150px;
+  background: var(--blob-warm);
+}
+
+.backdrop-blob-3 {
+  width: 540px;
+  height: 540px;
+  bottom: -200px;
+  left: 22%;
+  background: var(--blob-soft);
+}
+
+/* == Motion: satu reveal tenang saat halaman masuk, bukan animasi tersebar. == */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Kartu interaktif terangkat halus saat hover. */
+.card-lift {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(31, 38, 135, 0.1);
+}
+
+.dark .card-lift:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+  .card-lift,
+  .card-lift:hover {
+    transition: none;
+    transform: none;
   }
 }

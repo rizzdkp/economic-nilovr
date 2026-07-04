@@ -42,7 +42,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex flex-1 items-center justify-center px-4 py-12">
-      <div className="glass-card w-full max-w-sm p-8">
+      <div className="glass-card page-enter w-full max-w-sm p-8">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-card bg-accent text-white">
             <IconWallet size={24} stroke={1.75} />

@@ -1,19 +1,21 @@
 import Link from "next/link";
 import { getDashboardData } from "@/lib/dashboard-data";
-
-// Data dashboard harus selalu segar dari database, jangan di-prerender saat build.
-export const dynamic = "force-dynamic";
+import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { SummaryCards } from "@/components/dashboard/SummaryCards";
 import { RecentTransactionsList } from "@/components/dashboard/RecentTransactionsList";
 import { DompetCard } from "@/components/dompet/DompetCard";
 import { TrendChart } from "@/components/chart/TrendChart";
 import { CategoryDonutChart } from "@/components/chart/CategoryDonutChart";
 
+// Data dashboard harus selalu segar dari database, jangan di-prerender saat build.
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const data = await getDashboardData();
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="page-enter flex flex-col gap-6">
+      <DashboardAutoRefresh />
       <div>
         <h1 className="text-2xl font-semibold text-text-primary">Ringkasan bulan ini</h1>
         <p className="mt-1 text-sm text-text-secondary">

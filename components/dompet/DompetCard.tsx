@@ -33,7 +33,7 @@ export function DompetCard({ nama, tipe, warna, saldoBerjalan, diarsipkan, onCli
   const IconComp = TIPE_ICON[tipe];
 
   return (
-    <div className="surface-card flex flex-col gap-4 p-5">
+    <div className="surface-card card-lift flex flex-col gap-4 p-5">
       <div className="flex items-start justify-between">
         <button type="button" onClick={onClick} className="flex items-center gap-3 text-left" disabled={!onClick}>
           <span
