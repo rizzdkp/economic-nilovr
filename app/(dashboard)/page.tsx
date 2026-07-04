@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { getDashboardData } from "@/lib/dashboard-data";
+
+// Data dashboard harus selalu segar dari database, jangan di-prerender saat build.
+export const dynamic = "force-dynamic";
 import { SummaryCards } from "@/components/dashboard/SummaryCards";
 import { RecentTransactionsList } from "@/components/dashboard/RecentTransactionsList";
 import { DompetCard } from "@/components/dompet/DompetCard";
