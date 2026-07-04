@@ -50,7 +50,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         aria-label={title}
         onClick={(event) => event.stopPropagation()}
         className={cn(
-          "surface-card max-h-[85vh] w-full overflow-y-auto rounded-b-none p-6 shadow-xl transition-transform duration-200 md:max-w-md md:rounded-card",
+          "glass-card modal-panel max-h-[85vh] w-full overflow-y-auto p-6 shadow-xl transition-transform duration-200 md:max-w-md",
           open ? "translate-y-0 md:opacity-100" : "translate-y-full md:translate-y-4 md:opacity-0",
         )}
       >

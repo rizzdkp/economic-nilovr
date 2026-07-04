@@ -1,8 +1,25 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/auth";
+import {
+  SESSION_COOKIE_NAME,
+  SESSION_MAX_AGE_SECONDS,
+  createSessionToken,
+  verifySessionToken,
+} from "@/lib/auth";
 
 const PUBLIC_PATHS = ["/login", "/api/auth/login", "/api/auth/logout"];
+
+/** Sliding session: setiap akses valid memperpanjang masa berlaku 30 hari (spec §1). */
+function withRenewedSession(response: NextResponse): NextResponse {
+  response.cookies.set(SESSION_COOKIE_NAME, createSessionToken(), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: SESSION_MAX_AGE_SECONDS,
+    path: "/",
+  });
+  return response;
+}
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -11,7 +28,7 @@ export function proxy(request: NextRequest) {
 
   if (pathname === "/login") {
     if (isValid) {
-      return NextResponse.redirect(new URL("/", request.url));
+      return withRenewedSession(NextResponse.redirect(new URL("/", request.url)));
     }
     return NextResponse.next();
   }
@@ -21,7 +38,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (isValid) {
-    return NextResponse.next();
+    return withRenewedSession(NextResponse.next());
   }
 
   if (pathname.startsWith("/api")) {
