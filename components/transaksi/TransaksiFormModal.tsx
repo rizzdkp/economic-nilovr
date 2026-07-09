@@ -52,17 +52,15 @@ export function TransaksiFormModal({
 }: TransaksiFormModalProps) {
   return (
     <Modal open={open} onClose={onClose} title={transaksi ? "Edit transaksi" : "Tambah transaksi"}>
-      {open && (
-        <TransaksiForm
-          key={transaksi?.id ?? "baru"}
-          transaksi={transaksi}
-          onSaved={onSaved}
-          onClose={onClose}
-          dompetOptions={dompetOptions}
-          kategoriIncomeOptions={kategoriIncomeOptions}
-          kategoriExpenseOptions={kategoriExpenseOptions}
-        />
-      )}
+      <TransaksiForm
+        key={transaksi?.id ?? "baru"}
+        transaksi={transaksi}
+        onSaved={onSaved}
+        onClose={onClose}
+        dompetOptions={dompetOptions}
+        kategoriIncomeOptions={kategoriIncomeOptions}
+        kategoriExpenseOptions={kategoriExpenseOptions}
+      />
     </Modal>
   );
 }

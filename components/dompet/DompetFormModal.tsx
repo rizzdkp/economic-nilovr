@@ -28,9 +28,7 @@ interface DompetFormModalProps {
 export function DompetFormModal({ open, onClose, onSaved, dompet }: DompetFormModalProps) {
   return (
     <Modal open={open} onClose={onClose} title={dompet ? "Edit dompet" : "Tambah dompet"}>
-      {open && (
-        <DompetForm key={dompet?.id ?? "baru"} dompet={dompet} onSaved={onSaved} onClose={onClose} />
-      )}
+      <DompetForm key={dompet?.id ?? "baru"} dompet={dompet} onSaved={onSaved} onClose={onClose} />
     </Modal>
   );
 }
