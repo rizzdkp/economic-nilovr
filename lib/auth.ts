@@ -1,5 +1,6 @@
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
+import fs from "fs";
 import { cookies } from "next/headers";
 
 export const SESSION_COOKIE_NAME = "finapp_session";
@@ -17,12 +18,19 @@ function getSessionSecret(): string {
   return secret;
 }
 
+function getPasswordHash(): string {
+  const fromEnv = process.env.APP_PASSWORD_HASH;
+  if (fromEnv && fromEnv.length >= 50) return fromEnv;
+  const filePath = process.env.AUTH_HASH_FILE || "/var/lib/finapp_hash";
+  try {
+    const fromFile = fs.readFileSync(filePath, "utf8").trim();
+    if (fromFile && fromFile.length >= 50) return fromFile;
+  } catch {}
+  throw new Error("APP_PASSWORD_HASH tidak ditemukan.");
+}
+
 export async function verifyPassword(plainPassword: string): Promise<boolean> {
-  const hash = process.env.APP_PASSWORD_HASH;
-  if (!hash) {
-    throw new Error("APP_PASSWORD_HASH belum diset di environment.");
-  }
-  return bcrypt.compare(plainPassword, hash);
+  return bcrypt.compare(plainPassword, getPasswordHash());
 }
 
 export function createSessionToken(): string {
